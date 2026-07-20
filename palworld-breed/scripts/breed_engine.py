@@ -181,3 +181,23 @@ def find_path(index, pals, start, target, easy_partners=False, own=None):
         "partner_hard": is_hard(partner, pals, target),
     } for parent, partner, child in chain]
     return {"steps": len(path), "path": path}
+
+
+def find_transfer(index, pals, start, target, easy_partners=False, own=None):
+    own = own or set()
+    result = find_path(index, pals, start, target,
+                       easy_partners=easy_partners, own=own)
+    if result is None:
+        return {"start": start, "target": target, "steps": None,
+                "path": [], "partners_needed": [],
+                "notes": ["no breeding path found"]}
+    needed = []
+    for step in result["path"]:
+        p = step["partner"]
+        if p not in own and p not in needed:
+            needed.append(p)
+    return {
+        "start": start, "target": target, "steps": result["steps"],
+        "path": result["path"], "partners_needed": needed,
+        "notes": ["passive rides on parent_carrier each step"],
+    }

@@ -98,5 +98,30 @@ class PathTest(unittest.TestCase):
         self.assertIsNone(be.find_path(self.idx, self.pals, "Late", "Start"))
 
 
+class TransferTest(unittest.TestCase):
+    def setUp(self):
+        self.combos, self.pals = be.load_data(FIX)
+        self.idx = be.build_index(self.combos)
+
+    def test_transfer_shape(self):
+        r = be.find_transfer(self.idx, self.pals, "Start", "Tgt",
+                             easy_partners=True)
+        self.assertEqual(r["start"], "Start")
+        self.assertEqual(r["target"], "Tgt")
+        self.assertEqual(r["steps"], 2)
+        self.assertEqual(r["partners_needed"], ["P1", "P2"])
+        self.assertIn("passive rides", r["notes"][0])
+
+    def test_transfer_excludes_owned_from_needed(self):
+        r = be.find_transfer(self.idx, self.pals, "Start", "Tgt",
+                             easy_partners=True, own={"P1"})
+        self.assertNotIn("P1", r["partners_needed"])
+
+    def test_transfer_no_path(self):
+        r = be.find_transfer(self.idx, self.pals, "Late", "Start")
+        self.assertIsNone(r["steps"])
+        self.assertEqual(r["notes"], ["no breeding path found"])
+
+
 if __name__ == "__main__":
     unittest.main()
