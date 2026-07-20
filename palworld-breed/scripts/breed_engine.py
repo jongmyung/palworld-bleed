@@ -201,3 +201,10 @@ def find_transfer(index, pals, start, target, easy_partners=False, own=None):
         "path": result["path"], "partners_needed": needed,
         "notes": ["passive rides on parent_carrier each step"],
     }
+
+
+def _resolve_own(name, pals):
+    """Resolve an --own entry to a key; fall back to the raw string if unresolved
+    so an unknown owned pal simply never matches a partner."""
+    key, _ = resolve_name(name, pals)
+    return key or name
