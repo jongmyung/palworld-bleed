@@ -68,19 +68,15 @@ from collections import defaultdict
 
 
 def build_index(combos):
-    child_of = defaultdict(set)
     partner_for = defaultdict(lambda: defaultdict(list))
     pair_child = {}
     producers = defaultdict(list)
     for p1, p2, child in combos:
-        child_of[p1].add(child)
-        child_of[p2].add(child)
         partner_for[p1][child].append(p2)
         partner_for[p2][child].append(p1)
         pair_child[tuple(sorted((p1, p2)))] = child
         producers[child].append((p1, p2))
     return {
-        "child_of": child_of,
         "partner_for": partner_for,
         "pair_child": pair_child,
         "producers": producers,
@@ -113,7 +109,7 @@ def make(index, pals, target_key, easiest=False, limit=None):
         if key in seen:
             continue
         seen.add(key)
-        if easiest and (p1 == p2 == target_key or target_key in (p1, p2)):
+        if easiest and target_key in (p1, p2):
             continue
         rows.append({
             "parent1": p1, "parent2": p2,

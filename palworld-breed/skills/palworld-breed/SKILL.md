@@ -37,7 +37,10 @@ pal they meant (show the candidates' Korean names via `resolve`). Never guess.
   the next parent.
 - Mark any step where `partner_hard` is true with ⚠️ (후반/변종 팰).
 - List `partners_needed` as "미리 잡아둘 파트너".
-- Footer: `데이터 기준일` from `data/meta.json` (`build_id`); if it looks stale,
+- `--easy-partners` only avoids hard PARTNERS, so an intermediate child pal on
+  the path may still be a variant/late-game pal — tell the user to check the
+  intermediates.
+- Footer: `데이터 빌드 ID` from `data/meta.json` (`build_id`); if it looks stale,
   suggest `/breed-refresh`.
 - If the target is self-breedable (its own combo produces itself — check with
   `whatis <target> <target>`), append the tip: breed target × target afterward
