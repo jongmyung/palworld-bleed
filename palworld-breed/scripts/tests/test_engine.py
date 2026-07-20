@@ -34,5 +34,36 @@ class LoadAndResolveTest(unittest.TestCase):
         self.assertEqual(be.resolve_name("없는팰", self.pals), (None, []))
 
 
+class IndexTest(unittest.TestCase):
+    def setUp(self):
+        self.combos, self.pals = be.load_data(FIX)
+        self.idx = be.build_index(self.combos)
+
+    def test_whatis_symmetric(self):
+        self.assertEqual(be.whatis(self.idx, "Start", "P1"), "Mid")
+        self.assertEqual(be.whatis(self.idx, "P1", "Start"), "Mid")
+
+    def test_whatis_none(self):
+        self.assertIsNone(be.whatis(self.idx, "Start", "P2"))
+
+    def test_is_hard(self):
+        self.assertTrue(be.is_hard("Var", self.pals))    # variant suffix
+        self.assertTrue(be.is_hard("Late", self.pals))   # dex > 140
+        self.assertFalse(be.is_hard("P1", self.pals))
+
+    def test_make_lists_all_producers(self):
+        rows = be.make(self.idx, self.pals, "Tgt")
+        pairs = {tuple(sorted((r["parent1"], r["parent2"]))) for r in rows}
+        self.assertIn(("Mid", "P2"), pairs)
+        self.assertIn(("Start", "Var"), pairs)
+        self.assertIn(("Tgt", "Tgt"), pairs)
+
+    def test_make_easiest_excludes_self_and_ranks(self):
+        rows = be.make(self.idx, self.pals, "Tgt", easiest=True)
+        pairs = [tuple(sorted((r["parent1"], r["parent2"]))) for r in rows]
+        self.assertNotIn(("Tgt", "Tgt"), pairs)      # self-breed excluded
+        self.assertEqual(pairs[0], ("Mid", "P2"))    # all-easy ranked first
+
+
 if __name__ == "__main__":
     unittest.main()
