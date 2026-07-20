@@ -1,0 +1,7 @@
+# Large regenerable raw scrape (plugin generates compact data/ via refresh)
+palworld-breed-combos.json
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
