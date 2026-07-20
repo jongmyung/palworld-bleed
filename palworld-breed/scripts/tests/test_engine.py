@@ -69,5 +69,34 @@ class IndexTest(unittest.TestCase):
         self.assertEqual(pairs[0], ("Mid", "P2"))    # all-easy ranked first
 
 
+class PathTest(unittest.TestCase):
+    def setUp(self):
+        self.combos, self.pals = be.load_data(FIX)
+        self.idx = be.build_index(self.combos)
+
+    def test_shortest_prefers_fewest_steps(self):
+        r = be.find_path(self.idx, self.pals, "Start", "Tgt")
+        self.assertEqual(r["steps"], 1)                       # Start x Var = Tgt
+        self.assertEqual(r["path"][0]["partner"], "Var")
+
+    def test_easy_partners_avoids_hard(self):
+        r = be.find_path(self.idx, self.pals, "Start", "Tgt", easy_partners=True)
+        self.assertEqual(r["steps"], 2)                       # Start->Mid->Tgt
+        self.assertEqual([s["child"] for s in r["path"]], ["Mid", "Tgt"])
+
+    def test_own_partner_wins_even_when_hard(self):
+        r = be.find_path(self.idx, self.pals, "Start", "Tgt",
+                         easy_partners=True, own={"Var"})
+        self.assertEqual(r["steps"], 1)
+        self.assertTrue(r["path"][0]["partner_owned"])
+
+    def test_same_start_target(self):
+        r = be.find_path(self.idx, self.pals, "Tgt", "Tgt")
+        self.assertEqual(r, {"steps": 0, "path": []})
+
+    def test_unreachable_returns_none(self):
+        self.assertIsNone(be.find_path(self.idx, self.pals, "Late", "Start"))
+
+
 if __name__ == "__main__":
     unittest.main()

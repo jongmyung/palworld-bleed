@@ -2,6 +2,7 @@
 
 Standard library only. No third-party dependencies.
 """
+import heapq
 import json
 import os
 
@@ -128,3 +129,55 @@ def make(index, pals, target_key, easiest=False, limit=None):
     if limit is not None:
         rows = rows[:limit]
     return rows
+
+
+def partner_cost(partner, pals, target, easy_partners, own):
+    base = 10.0 if (easy_partners and is_hard(partner, pals, target)) else 1.0
+    if own and partner in own:
+        base *= 0.1
+    return base
+
+
+def find_path(index, pals, start, target, easy_partners=False, own=None):
+    if start == target:
+        return {"steps": 0, "path": []}
+    # Dijkstra: state = pal key; edge parent->child via a partner.
+    dist = {start: 0.0}
+    prev = {}  # child -> (parent, partner)
+    pq = [(0.0, start)]
+    while pq:
+        d, node = heapq.heappop(pq)
+        if node == target:
+            break
+        if d > dist.get(node, float("inf")):
+            continue
+        for child, partners in index["partner_for"].get(node, {}).items():
+            best_partner = min(
+                partners,
+                key=lambda p: partner_cost(p, pals, target, easy_partners, own),
+            )
+            step_cost = partner_cost(best_partner, pals, target, easy_partners, own)
+            nd = d + step_cost
+            if nd < dist.get(child, float("inf")):
+                dist[child] = nd
+                prev[child] = (node, best_partner)
+                heapq.heappush(pq, (nd, child))
+    if target not in prev:
+        return None
+    # reconstruct
+    chain = []
+    cur = target
+    while cur != start:
+        parent, partner = prev[cur]
+        chain.append((parent, partner, cur))
+        cur = parent
+    chain.reverse()
+    own = own or set()
+    path = [{
+        "parent_carrier": parent,
+        "partner": partner,
+        "child": child,
+        "partner_owned": partner in own,
+        "partner_hard": is_hard(partner, pals, target),
+    } for parent, partner, child in chain]
+    return {"steps": len(path), "path": path}
