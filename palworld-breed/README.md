@@ -2,6 +2,17 @@
 
 Claude Code plugin for Palworld breeding paths. Also packageable for Claude Cowork.
 
+## Install
+
+From the marketplace in this repo:
+
+```
+/plugin marketplace add jongmyung/palworld-bleed
+/plugin install palworld-breed@palworld-bleed
+```
+
+Then use natural language, `/breed-path`, or `/breed-refresh`. See the [repo README](../README.md#installation) for local-dev and Cowork options. Python 3 stdlib only — no dependencies.
+
 ## Commands (engine, `scripts/palbreed.py`)
 - `path <start> <target> [--easy-partners]`
 - `transfer <holder> <target> [--own a,b,c] [--easy-partners]`

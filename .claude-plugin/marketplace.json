@@ -1,0 +1,13 @@
+{
+  "name": "palworld-bleed",
+  "owner": {
+    "name": "jongmyung"
+  },
+  "plugins": [
+    {
+      "name": "palworld-breed",
+      "source": "./palworld-breed",
+      "description": "Compute Palworld breeding-combination paths (shortest, easy-partner, passive-transfer) and reverse lookups over a bundled dataset."
+    }
+  ]
+}

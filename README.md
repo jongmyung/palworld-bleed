@@ -25,9 +25,37 @@ palworld-breed/           # the plugin (install this)
 docs/superpowers/         # design spec + implementation plan
 ```
 
-## Quick start
+## Installation
 
-Install the `palworld-breed/` directory as a Claude Code plugin, then ask in natural language, or use the CLI directly:
+This repo is a Claude Code plugin marketplace ([`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json)) hosting the `palworld-breed` plugin.
+
+1. Add this repo as a marketplace:
+   ```
+   /plugin marketplace add jongmyung/palworld-bleed
+   ```
+2. Install the plugin:
+   ```
+   /plugin install palworld-breed@palworld-bleed
+   ```
+3. Verify it loaded (skill + `breed-path`, `breed-refresh` commands):
+   ```
+   /plugin
+   ```
+
+Now ask in natural language ("나이트윙에서 아누비스까지 경로") or run the slash commands (`/breed-path`, `/breed-refresh`).
+
+**Local development** (test a cloned copy without publishing):
+```
+/plugin marketplace add /path/to/palworld-bleed      # local repo path
+/plugin install palworld-breed@palworld-bleed
+```
+Or sideload for a single session: `claude --plugin-dir /path/to/palworld-bleed/palworld-breed`.
+
+Python 3 must be on `PATH` (the engine is standard-library only — no `pip install`). Bundled scripts and data resolve via `${CLAUDE_PLUGIN_ROOT}`, so they are found automatically once installed.
+
+## Quick start (CLI)
+
+You can also drive the engine directly without installing the plugin:
 
 ```bash
 python3 palworld-breed/scripts/palbreed.py path 나이트윙 아누비스 --json
