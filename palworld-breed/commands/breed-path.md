@@ -1,5 +1,5 @@
 ---
-description: Shortest Palworld breeding path between two pals. Usage: /breed-path <start> <target> [easy]
+description: "Shortest Palworld breeding path between two pals. Usage: /breed-path <start> <target> [easy]"
 ---
 
 Run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/palbreed.py" path "$1" "$2" --json`
