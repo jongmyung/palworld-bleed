@@ -1,0 +1,9 @@
+{
+  "Start": {"ko": "시작", "en": "Start", "number": "001"},
+  "Mid":   {"ko": "중간", "en": "Mid", "number": "002"},
+  "Tgt":   {"ko": "목표", "en": "Target", "number": "003"},
+  "P1":    {"ko": "파트너하나", "en": "Partner1", "number": "010"},
+  "P2":    {"ko": "파트너둘", "en": "Partner2", "number": "011"},
+  "Var":   {"ko": "변종", "en": "Variant", "number": "010B"},
+  "Late":  {"ko": "후반", "en": "Late", "number": "200"}
+}

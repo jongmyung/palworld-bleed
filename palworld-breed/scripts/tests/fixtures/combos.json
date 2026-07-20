@@ -1,0 +1,6 @@
+[
+  ["Start", "P1", "Mid"],
+  ["Mid", "P2", "Tgt"],
+  ["Start", "Var", "Tgt"],
+  ["Tgt", "Tgt", "Tgt"]
+]
