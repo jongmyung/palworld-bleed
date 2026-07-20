@@ -15,7 +15,7 @@ format its `--json` output for the user. The engine is read-only except
 - "move this passive to B, I own X,Y" → `transfer A B --own X,Y --easy-partners --json`
 - "combos that make X" / "easiest combo for X" → `make X [--easiest] --json`
 - "A × B = ?" → `whatis A B --json`
-- "refresh" → `refresh`
+- "refresh" → `refresh --json`
 
 Always call with `--json`, then render the result yourself.
 
@@ -45,6 +45,4 @@ pal they meant (show the candidates' Korean names via `resolve`). Never guess.
 
 ## refresh
 
-`refresh` needs outbound network to palworldbreed.com. If it fails on a VM
-(e.g. Cowork sandbox without egress), tell the user to run `refresh` locally and
-redistribute the updated `data/` with the plugin.
+`python3 "${CLAUDE_PLUGIN_ROOT}/scripts/palbreed.py" refresh --json` needs outbound network to palworldbreed.com. On success, parse the returned JSON with keys `build_id` and `combo_count` to report the new values. If it fails on a VM (e.g. Cowork sandbox without egress), tell the user to run it locally and redistribute the updated `data/` with the plugin.
