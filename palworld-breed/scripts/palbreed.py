@@ -30,14 +30,16 @@ def _emit(obj, as_json):
 
 
 def main(argv=None):
-    # Shared parent so --json/--data are accepted both before and after the
-    # subcommand token (argparse does not let subparsers see the parent
-    # parser's optionals when they trail the subcommand's own positionals).
+    # Shared parent applied ONLY to subparsers. --json/--data are only
+    # supported AFTER the subcommand (and its positionals): if this parent
+    # were also applied to the top-level parser, argparse's subparser action
+    # would silently reset --json/--data back to their defaults whenever they
+    # were placed before the subcommand, discarding a leading --data value.
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--json", action="store_true")
     common.add_argument("--data", default=None)
 
-    parser = argparse.ArgumentParser(prog="palbreed", parents=[common])
+    parser = argparse.ArgumentParser(prog="palbreed")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("path", parents=[common])
