@@ -5,5 +5,6 @@
   "P1":    {"ko": "파트너하나", "en": "Partner1", "number": "010"},
   "P2":    {"ko": "파트너둘", "en": "Partner2", "number": "011"},
   "Var":   {"ko": "변종", "en": "Variant", "number": "010B"},
-  "Late":  {"ko": "후반", "en": "Late", "number": "200"}
+  "Late":  {"ko": "후반", "en": "Late", "number": "200"},
+  "Anubis": {"ko": "아누비스", "en": "Anubis", "number": "100"}
 }

@@ -51,6 +51,10 @@ class IndexTest(unittest.TestCase):
         self.assertTrue(be.is_hard("Late", self.pals))   # dex > 140
         self.assertFalse(be.is_hard("P1", self.pals))
 
+    def test_is_hard_anubis_special_case(self):
+        self.assertTrue(be.is_hard("Anubis", self.pals, target="Anubis"))
+        self.assertFalse(be.is_hard("Anubis", self.pals))
+
     def test_make_lists_all_producers(self):
         rows = be.make(self.idx, self.pals, "Tgt")
         pairs = {tuple(sorted((r["parent1"], r["parent2"]))) for r in rows}
