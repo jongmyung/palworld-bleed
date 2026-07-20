@@ -1,0 +1,6 @@
+{
+  "name": "palworld-breed",
+  "version": "0.1.0",
+  "description": "Compute Palworld breeding-combination paths (shortest, easy-partner, passive-transfer) and reverse lookups over a bundled dataset.",
+  "author": "jongmyung.ha"
+}
