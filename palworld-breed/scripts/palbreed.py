@@ -29,6 +29,23 @@ def _emit(obj, as_json):
         print(obj)
 
 
+def _names(keys, pals):
+    """Map each referenced pal key to its display names, so the formatter can
+    render `한글(English)` without re-reading the full pal table."""
+    out = {}
+    for k in keys:
+        if k is None or k in out:
+            continue
+        info = pals.get(k, {})
+        out[k] = {"ko": info.get("ko", k), "en": info.get("en", k)}
+    return out
+
+
+def _path_keys(path):
+    return [k for step in path
+            for k in (step["parent_carrier"], step["partner"], step["child"])]
+
+
 def main(argv=None):
     # Shared parent applied ONLY to subparsers. --json/--data are only
     # supported AFTER the subcommand (and its positionals): if this parent
@@ -82,24 +99,33 @@ def main(argv=None):
     elif args.cmd == "whatis":
         a = _resolve_or_exit(args.a, pals, args.json)
         b = _resolve_or_exit(args.b, pals, args.json)
-        _emit({"a": a, "b": b, "child": be.whatis(idx, a, b)}, args.json)
+        child = be.whatis(idx, a, b)
+        _emit({"a": a, "b": b, "child": child,
+               "names": _names([a, b, child], pals)}, args.json)
     elif args.cmd == "path":
         s = _resolve_or_exit(args.start, pals, args.json)
         tg = _resolve_or_exit(args.target, pals, args.json)
-        _emit(be.find_path(idx, pals, s, tg, easy_partners=args.easy_partners),
-              args.json)
+        result = be.find_path(idx, pals, s, tg, easy_partners=args.easy_partners)
+        if result is not None:
+            result = {"start": s, "target": tg, **result,
+                      "names": _names([s, tg] + _path_keys(result["path"]), pals)}
+        _emit(result, args.json)
     elif args.cmd == "transfer":
         h = _resolve_or_exit(args.holder, pals, args.json)
         tg = _resolve_or_exit(args.target, pals, args.json)
         own = {be._resolve_own(o, pals) for o in args.own.split(",") if o.strip()} \
             if args.own else set()
-        _emit(be.find_transfer(idx, pals, h, tg,
-                               easy_partners=args.easy_partners, own=own),
-              args.json)
+        result = be.find_transfer(idx, pals, h, tg,
+                                  easy_partners=args.easy_partners, own=own)
+        result["names"] = _names(
+            [result["start"], result["target"]] + result["partners_needed"]
+            + _path_keys(result["path"]), pals)
+        _emit(result, args.json)
     elif args.cmd == "make":
         tg = _resolve_or_exit(args.target, pals, args.json)
-        _emit(be.make(idx, pals, tg, easiest=args.easiest, limit=args.limit),
-              args.json)
+        rows = be.make(idx, pals, tg, easiest=args.easiest, limit=args.limit)
+        keys = [tg] + [k for row in rows for k in (row["parent1"], row["parent2"])]
+        _emit({"target": tg, "combos": rows, "names": _names(keys, pals)}, args.json)
 
 
 if __name__ == "__main__":

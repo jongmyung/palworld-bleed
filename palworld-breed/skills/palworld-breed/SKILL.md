@@ -31,7 +31,15 @@ pal they meant (show the candidates' Korean names via `resolve`). Never guess.
 
 ## Output formatting
 
-- Korean tables, English keys in parentheses.
+- Every query result includes a `names` map: `{key: {"ko": ..., "en": ...}}`
+  covering each pal in the result. Use it to render display names — never show a
+  bare English key.
+- **Match the user's language.** If the user wrote in Korean, render every pal as
+  `{ko}({en})` — e.g. `나이트윙(Nitewing)`, `아누비스(Anubis)`. If the user wrote
+  in English, render as `{en}` (optionally `{en} ({ko})`). Apply this everywhere:
+  path steps, `partners_needed`, `make` combos, `whatis` results.
+- `make` returns `{"target", "combos": [...], "names": {...}}`; each combo has
+  `parent1`/`parent2` (+ `hard1`/`hard2`).
 - For `transfer`, present each step as `[초절기교] {carrier} × {partner} = {child}`,
   bold the carrier, and remind: keep only offspring that inherited the passive as
   the next parent.

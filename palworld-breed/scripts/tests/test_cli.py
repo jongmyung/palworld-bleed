@@ -37,6 +37,23 @@ class CliTest(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0)
         self.assertEqual(sorted(json.loads(r.stdout)["candidates"]), ["P1", "P2"])
 
+    def test_path_includes_names_map(self):
+        # Output carries display names so the skill can render 한글(English).
+        data = json.loads(run("path", "Start", "Tgt", "--json").stdout)
+        self.assertEqual(data["names"]["Var"], {"ko": "변종", "en": "Variant"})
+        self.assertEqual(data["names"]["Tgt"], {"ko": "목표", "en": "Target"})
+
+    def test_whatis_includes_names_map(self):
+        data = json.loads(run("whatis", "시작", "P1", "--json").stdout)
+        self.assertEqual(data["names"]["Start"]["ko"], "시작")
+        self.assertEqual(data["names"]["Mid"]["ko"], "중간")
+
+    def test_make_returns_object_with_names(self):
+        data = json.loads(run("make", "Tgt", "--easiest", "--json").stdout)
+        self.assertEqual(data["target"], "Tgt")
+        self.assertIsInstance(data["combos"], list)
+        self.assertIn("변종", [v["ko"] for v in data["names"].values()])
+
     def test_data_flag_after_subcommand(self):
         # --data must be honored when passed AFTER the subcommand and its
         # positionals, without relying on the PALBREED_DATA env var.
