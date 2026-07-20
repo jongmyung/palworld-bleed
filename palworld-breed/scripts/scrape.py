@@ -65,7 +65,7 @@ def refresh(data_dir, lang="ko", fetch=None):
     build_id = get_build_id(fetch("%s/%s/all/all/all" % (BASE, lang)))
     seed = json.loads(fetch(data_url("all")))
     pals_ko = parse_pals(seed)                       # {key: {name, number}}
-    pals_en = parse_pals(json.loads(fetch("%s/_next/data/%s/en/all/all/all.json" % (BASE, build_id))))
+    pals_en = parse_pals(json.loads(fetch("%s/_next/data/%s/en-US/all/all/all.json" % (BASE, build_id))))
 
     combos = []
     for key in pals_ko:
