@@ -90,6 +90,11 @@ def refresh(data_dir, lang="ko", fetch=None):
         }
         for k in pals_ko
     }
+    if not pals_ko:
+        raise ValueError("scrape returned no pals — refusing to overwrite existing data")
+    if not uniq:
+        raise ValueError("scrape returned no combos — refusing to overwrite existing data")
+
     meta = {"build_id": build_id, "combo_count": len(uniq)}
     write_data_atomic(data_dir, uniq, pals, meta)
     return meta

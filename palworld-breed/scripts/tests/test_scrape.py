@@ -51,3 +51,20 @@ class ScrapeUnitTest(unittest.TestCase):
                 scrape.refresh(d, fetch=boom)
             with open(os.path.join(d, "combos.json"), encoding="utf-8") as f:
                 self.assertEqual(json.load(f), [["OLD", "OLD", "OLD"]])
+
+    def test_refresh_preserves_on_empty_scrape(self):
+        with tempfile.TemporaryDirectory() as d:
+            # seed existing data
+            scrape.write_data_atomic(
+                d, [["OLD", "OLD", "OLD"]], {"OLD": {"ko": "구", "en": "OLD", "number": "001"}},
+                {"build_id": "old"})
+
+            def empty_fetch(url):
+                if not url.endswith(".json"):
+                    return 'x{"buildId":"X","other":1}y'
+                return '{"pageProps": {"pals": [], "data": []}}'
+
+            with self.assertRaises(ValueError):
+                scrape.refresh(d, fetch=empty_fetch)
+            with open(os.path.join(d, "combos.json"), encoding="utf-8") as f:
+                self.assertEqual(json.load(f), [["OLD", "OLD", "OLD"]])
